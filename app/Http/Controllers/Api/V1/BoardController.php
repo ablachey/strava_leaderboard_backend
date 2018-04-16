@@ -14,6 +14,8 @@ use App\Effort;
 use \Carbon\Carbon;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Http\Resources\Api\V1\EffortResource;
+use App\Http\Requests\Api\V1\BoardSearchRequest;
+use App\Http\Requests\Api\V1\BoardJoinRequest;
 
 class BoardController extends BaseController
 {
@@ -32,11 +34,37 @@ class BoardController extends BaseController
     return $this->respond(BoardResource::make($board));
   }
 
+  public function search(BoardSearchRequest $request) {
+    $boards = Board::where('name', 'LIKE', "%$request->keyword%")->orderBy('name', 'asc')->get();
+    return $this->respond($boards);
+  }
+
   public function store(BoardRequest $request) {
     $board = Board::create($request->all());
     $board->users()->save($this->getUser(), ['active' => true, 'admin' => true]);
 
     return $this->respond($board);
+  }
+
+  public function join(BoardJoinRequest $request) {
+    $board = Board::find($request->board_id);
+
+    if(!$board) {
+      return $this->respondWithNotFound();
+    }
+
+    $user = $this->getUser();
+    $exists = $board->users()->where('user_id', $user->id)->first();
+
+    if($exists) {
+      return $this->respondWithError(null, 422, ['user' => ['Already joined']]);
+    }
+
+    if($board->users()->save($user, ['active' => false, 'admin' => false])) {
+      return $this->respond(true);
+    }
+
+    return $this->respond(false);
   }
 
   public function getCard(CardRequest $request) {
