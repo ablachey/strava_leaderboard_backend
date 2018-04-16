@@ -5,6 +5,9 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use App\Exceptions\ValidationException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class Handler extends ExceptionHandler
 {
@@ -50,8 +53,16 @@ class Handler extends ExceptionHandler
     if($e instanceof ValidationException) {
       return $this->jsonResponse(['error' => 'bad request', 'message' => $e->getErrors()], 422);
     }
+    if($e instanceof TokenExpiredException) {
+      return $this->jsonResponse(['error' => 'token expired', 'message' => $e->getMessage()], 401);
+    }
+    if($e instanceof TokenInvalidException) {
+      return $this->jsonResponse(['error' => 'token invalid', 'message' => $e->getMessage()], 401);
+    }
+    if($e instanceof JWTException) {
+      return $this->jsonResponse(['error' => 'token not present', 'message' => $e->getMessage()], 401);
+    }
 
-  
     return $this->jsonResponse(['error' => $e->getMessage(), 'message' => ''], 500);
   }
 
