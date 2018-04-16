@@ -15,20 +15,21 @@ class Effort extends Model
     'distance',
   ];
 
-  protected $types = [
+  const TYPES = [
     'four-hundred' => '400m',
     'half-mile' => '1/2 mile',
     'kilometer' => '1k',
     'mile' => '1 mile',
     'two-mile' => '2 mile',
     'five-kilometer' => '5k',
+    'ten-kilometer' => '10k',
   ];
 
   public function activity() {
     return $this->belongsTo(Activity::class);
   }
 
-  public function getType($reqType) {
-    return $types[$reqTypes];
+  public static function getType($reqType) {
+    return (array_key_exists($reqType, self::TYPES)) ? self::TYPES[$reqType] : null;
   }
 }

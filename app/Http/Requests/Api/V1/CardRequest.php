@@ -15,6 +15,7 @@ class CardRequest extends BaseRequest
   {
     return [
       'type' => 'required|in:four-hundred,half-mile,kilometer,mile,two-mile,five-kilometer,ten-kilometer',
+      'days' => 'required|numeric|min:1|max:30',
     ];
   }
 }

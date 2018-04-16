@@ -22,7 +22,7 @@ class CreateActivitiesTable extends Migration
       $table->integer('moving_time')->unsigned();
       $table->integer('elapsed_time')->unsigned();
       $table->string('type');
-      $table->string('start_date_local');
+      $table->timestamp('start_date_local');
       $table->boolean('has_heartrate');
       $table->double('average_heartrate')->nullable();
       $table->double('max_heartrate')->nullable();

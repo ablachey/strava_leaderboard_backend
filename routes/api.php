@@ -10,5 +10,5 @@ Route::group(['middleware' => 'jwt.auth'], function() {
 
   Route::get('boards/{id}', 'Api\V1\BoardController@show');
   Route::post('boards', 'Api\V1\BoardController@store');
-  Route::get('boards/{id}/cards/{cid}', 'Api\V1\BoardController@getCard');
+  Route::get('boards/{id}/cards', 'Api\V1\BoardController@getCard');
 });

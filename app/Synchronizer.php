@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use App\User;
 use App\Activity;
 use App\Effort;
+use \Carbon\Carbon;
 
 class Synchronizer
 {
@@ -49,6 +50,7 @@ class Synchronizer
     
     $data = json_decode($result->getBody(), true);
     $data['strava_id'] = $data['id'];
+    $data['start_date_local'] = new Carbon($data['start_date_local']);
     unset($data['id']);
 
     $activity = new Activity($data);
