@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\BoardRequest;
 use App\Board;
+use App\Http\Resources\Api\V1\BoardResource;
+use App\Http\Requests\Api\V1\CardRequest;
 
 class BoardController extends BaseController
 {
@@ -22,7 +24,7 @@ class BoardController extends BaseController
       return $this->respondWithError(null, 403, 'forbidden');
     }
 
-    return $this->respond($board);
+    return $this->respond(BoardResource::make($board));
   }
 
   public function store(BoardRequest $request) {
@@ -30,5 +32,9 @@ class BoardController extends BaseController
     $board->users()->save($this->getUser(), ['active' => true, 'admin' => true]);
 
     return $this->respond($board);
+  }
+
+  public function getCard(CardRequest $reques) {
+
   }
 }
