@@ -51,25 +51,27 @@ class Handler extends ExceptionHandler
   public function render($request, Exception $e)
   {
     if($e instanceof ValidationException) {
-      return $this->jsonResponse(['error' => 'bad_request', 'message' => $e->getErrors()], 422);
+      return $this->jsonResponse($e->getErrors(), 422);
     }
     if($e instanceof TokenExpiredException) {
-      return $this->jsonResponse(['error' => 'token_expired', 'message' => $e->getMessage()], 401);
+      return $this->jsonResponse('token_expired', 401);
     }
     if($e instanceof TokenInvalidException) {
-      return $this->jsonResponse(['error' => 'token_invalid', 'message' => $e->getMessage()], 401);
+      return $this->jsonResponse('token_invalid', 401);
     }
     if($e instanceof JWTException) {
-      return $this->jsonResponse(['error' => 'token_not_provided', 'message' => $e->getMessage()], 400);
+      return $this->jsonResponse('token_not_provided', 400);
     }
 
-    return $this->jsonResponse(['error' => $e->getMessage(), 'message' => ''], 500);
+    return $this->jsonResponse($e->getMessage(), 500);
   }
 
-  private function jsonResponse(array $payload=null, $statusCode=500)
+  private function jsonResponse($error = 'error', $statusCode = 500)
   {
-    $payload = $payload ?: [];
-
-    return response()->json($payload, $statusCode);
+    return response()->json([
+      'code' => $statusCode,
+      'message' => $error,
+      'data' => null
+    ], $statusCode);
   }
 }

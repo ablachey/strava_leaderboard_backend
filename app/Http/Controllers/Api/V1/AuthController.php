@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\AuthRequest;
@@ -9,8 +10,9 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use App\User;
 use JWTAuth;
+use App\Http\Resources\Api\V1\UserResource;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
   public function authenticate(AuthRequest $request) {
     try {
@@ -41,19 +43,19 @@ class AuthController extends Controller
       $user = User::updateOrCreate($userData);
       
       if(!$user) {
-        return response()->json(['code' => 401, 'error' => 'unauthorized', 'message' => '']);
+        return $this->respondWithNotFound();
       }
 
       $jwt = JWTAuth::fromUser($user, []);
 
       if($jwt) {
-        return response(['token' => $jwt], 200);
+        return $this->respond(['token' => $jwt], 200);
       }
       
-      return response()->json(['code' => 401, 'error' => 'unauthorized', 'message' => '']);
+      return $this->respondWithError(null, 401, 'unauthorized');
     }
     catch(GuzzleException $e) {
-      return response()->json(['code' => $e->getCode(), 'error' => 'unauthorized', 'message' => $e->getMessage()], $e->getCode());
+      return $this->respondWithError(null, 500, 'could_not_connect_to_strava');
     }
   }
 
@@ -61,9 +63,7 @@ class AuthController extends Controller
     if(!$user = JWTAuth::parseToken()->authenticate()) {
       return response()->json(['user_not_found'], 404);
     }
-
-    unset($user->token);
     
-    return response()->json(compact('user'));
+    return $this->respond(UserResource::make($user));
   }
 }
