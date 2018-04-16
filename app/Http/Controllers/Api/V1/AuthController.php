@@ -57,11 +57,7 @@ class AuthController extends BaseController
   }
 
   public function authenticatedUser(Request $request) {
-    if(!$user = JWTAuth::parseToken()->authenticate()) {
-      return $this->respondWithNotFound();
-    }
-    
-    return $this->respond(UserResource::make($user));
+    return $this->respond(UserResource::make($this->getUser()));
   }
 
   public function unauthenticate() {

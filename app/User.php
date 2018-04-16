@@ -21,4 +21,8 @@ class User extends Authenticatable
   public function activities() {
     return $this->hasMany(Activity::class);
   }
+
+  public function boards() {
+    return $this->belongsToMany(Board::class);
+  }
 }

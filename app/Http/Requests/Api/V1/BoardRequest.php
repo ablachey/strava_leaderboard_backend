@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\V1;
 
 use App\Http\Requests\Api\BaseRequest;
 
-class AuthRequest extends BaseRequest
+class BoardRequest extends BaseRequest
 {
   /**
    * Get the validation rules that apply to the request.
@@ -14,7 +14,7 @@ class AuthRequest extends BaseRequest
   public function rules()
   {
     return [
-      'code' => 'required'
+      'name' => 'required|unique:boards',
     ];
   }
 }

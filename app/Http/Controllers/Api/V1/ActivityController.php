@@ -14,13 +14,9 @@ use App\Effort;
 class ActivityController extends BaseController
 {
   public function syncData() {
-    if(!$user = JWTAuth::parseToken()->authenticate()) {
-      return $this->respondWithNotFound();
-    }
-
     $before = Carbon::now();
     $after = Carbon::now()->subMonth();
-    $syncObj = new Synchronizer($before->format('U'), $after->format('U'), $user);
+    $syncObj = new Synchronizer($before->format('U'), $after->format('U'), $this->getUser());
 
     return $this->respond($syncObj->sync());
   }

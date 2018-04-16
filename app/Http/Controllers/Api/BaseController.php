@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\BaseResource;
+use JWTAuth;
 
 class BaseController extends Controller
 {
@@ -27,5 +28,13 @@ class BaseController extends Controller
 
   public function respondWithNotFound() {
     return $this->respond(null, 404, Response::$statusTexts[404]);
+  }
+
+  public function getUser() {
+    if(!$user = JWTAuth::parseToken()->authenticate()) {
+      return $this->respondWithNotFound();
+    }
+
+    return $user;
   }
 }
