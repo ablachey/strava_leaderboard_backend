@@ -18,12 +18,7 @@ class User extends Authenticatable
     'firstname', 'lastname', 'email', 'strava_id', 'token', 'badge_type', 'profile_pic', 'profile_pic_medium',
   ];
 
-  /**
-   * The attributes that should be hidden for arrays.
-   *
-   * @var array
-   */
-  protected $hidden = [
-    'password', 'remember_token',
-  ];
+  public function activities() {
+    return $this->hasMany(Activity::class);
+  }
 }
