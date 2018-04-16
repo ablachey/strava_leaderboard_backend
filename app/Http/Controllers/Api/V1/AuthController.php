@@ -26,11 +26,12 @@ class AuthController extends Controller
       );
 
       $data = json_decode($result->getBody());
-
+      
       $userData = [
         'token' => $data->access_token,
         'firstname' => $data->athlete->firstname,
         'lastname' => $data->athlete->lastname,
+        'strava_id' => $data->athlete->id,
         'email' => $data->athlete->email,
         'badge_type' => $data->athlete->badge_type_id,
         'profile_pic' => $data->athlete->profile,

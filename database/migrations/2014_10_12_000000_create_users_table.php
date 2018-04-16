@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
       $table->string('lastname');
       $table->string('email')->unique();
       $table->string('token');
+      $table->integer('strava_id')->nullable();
       $table->integer('badge_type');
       $table->string('profile_pic');
       $table->string('profile_pic_medium');
