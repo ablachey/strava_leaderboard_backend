@@ -10,6 +10,8 @@ use GuzzleHttp\Client;
 use App\User;
 use JWTAuth;
 use App\Http\Resources\Api\V1\UserResource;
+use App\Synchronizer;
+use \Carbon\Carbon;
 
 class AuthController extends BaseController
 {
@@ -56,7 +58,7 @@ class AuthController extends BaseController
 
   public function authenticatedUser(Request $request) {
     if(!$user = JWTAuth::parseToken()->authenticate()) {
-      return response()->json(['user_not_found'], 404);
+      return $this->respondWithNotFound();
     }
     
     return $this->respond(UserResource::make($user));
