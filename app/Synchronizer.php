@@ -21,15 +21,29 @@ class Synchronizer
   }
 
   public function sync() {
+    $acts = collect();
+    $page = 1;
+
     $client = new Client();
-    $params = http_build_query(['before' => $this->before, 'after' => $this->after]);
-    $url = env('STRAVA_OWNER_URL') . '/activities?' . $params;
+    $data = [];
 
-    $result = $client->get($url, [
-      'headers' => $this->getAuthHeader()
-    ]);
+    do {
+      $params = http_build_query(['before' => $this->before, 'after' => $this->after, 'page' => $page]);
+      $url = env('STRAVA_OWNER_URL') . '/activities?' . $params;
 
-    foreach(json_decode($result->getBody()) as $item) {
+      $result = $client->get($url, [
+        'headers' => $this->getAuthHeader()
+      ]);
+      
+      $data = json_decode($result->getBody());
+      foreach($data as $d) {
+        $acts->push($d);
+      }
+      
+      $page = $page + 1;
+    } while(count($data) > 0);
+    
+    foreach($acts as $item) {
       $activity = Activity::where('strava_id', $item->id)->first();
 
       if(!$activity) {
