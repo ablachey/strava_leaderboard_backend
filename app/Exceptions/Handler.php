@@ -8,6 +8,7 @@ use App\Exceptions\ValidationException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Handler extends ExceptionHandler
 {
@@ -61,6 +62,9 @@ class Handler extends ExceptionHandler
     }
     if($e instanceof JWTException) {
       return $this->jsonResponse('token_not_provided', 400);
+    }
+    if($e instanceof GuzzleException) {
+      return $this->jsonResponse('could_not_connect_to_strava', 500);
     }
 
     return $this->jsonResponse($e->getMessage(), 500);
