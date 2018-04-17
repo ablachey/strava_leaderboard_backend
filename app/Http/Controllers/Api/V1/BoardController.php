@@ -4,19 +4,11 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\BoardRequest;
-use App\Http\Requests\Api\V1\CardRequest;
 use App\Http\Requests\Api\V1\BoardSearchRequest;
 use App\Http\Resources\Api\V1\BoardResource;
 use App\Http\Resources\Api\V1\BoardAdminResource;
-use App\Http\Resources\Api\V1\UserResource;
-use App\Http\Resources\Api\V1\EffortResource;
-use \Carbon\Carbon;
 use App\Board;
-use App\Activity;
-use App\Effort;
-use App\User;
 
 class BoardController extends BaseController
 {
@@ -97,36 +89,5 @@ class BoardController extends BaseController
     }
     
     return $this->respond(($board->users()->updateExistingPivot($boardUser->id, ['active' => true])) ? true : false);
-  }
-
-  public function getCard(CardRequest $request) {
-    $board = Board::find($request->id);
-
-    if(!$board) {
-      return $this->respondWithNotFound();
-    }
-  
-    $fromDate = Carbon::now()->subDays($request->days);
-    $users = $board->users()->wherePivot('active', true)->get();
-    $effortByUsers = collect();
-
-    foreach($users as $user) {
-      $activities = $user->activities()->where('type', 'run')->where('start_date_local', '>=', $fromDate)->get();
-      $efforts = collect();
-      
-      foreach($activities as $activity) {
-        $effort = $activity->efforts()->where('name', Effort::getType($request->type))->orderBy('moving_time', 'asc')->first();
-        $efforts->push($effort);
-      }
-      $e = $efforts->where('moving_time', $efforts->min('moving_time'))->first();
-
-      if($e) {
-        $effortByUsers->push(EffortResource::make($e));
-      }
-    }
-
-    $sortedEfforts = $effortByUsers->sortBy('moving_time');
-    return $sortedEfforts->values()->all();
-    return $this->respond($sortedEfforts);
   }
 }
