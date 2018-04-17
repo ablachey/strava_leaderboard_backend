@@ -26,6 +26,7 @@ class UserBoardResource extends JsonResource
         'large' => $this->profile_pic,
       ],
       'admin' => $this->pivot->admin,
+      'active' => $this->pivot->active,
     ];
   }
 }

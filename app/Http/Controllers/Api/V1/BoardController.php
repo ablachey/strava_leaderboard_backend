@@ -6,31 +6,39 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\BoardRequest;
-use App\Board;
-use App\Http\Resources\Api\V1\BoardResource;
 use App\Http\Requests\Api\V1\CardRequest;
-use App\Activity;
-use App\Effort;
-use \Carbon\Carbon;
+use App\Http\Requests\Api\V1\BoardSearchRequest;
+use App\Http\Resources\Api\V1\BoardResource;
+use App\Http\Resources\Api\V1\BoardAdminResource;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Http\Resources\Api\V1\EffortResource;
-use App\Http\Requests\Api\V1\BoardSearchRequest;
-use App\Http\Requests\Api\V1\BoardJoinRequest;
+use \Carbon\Carbon;
+use App\Board;
+use App\Activity;
+use App\Effort;
+use App\User;
 
 class BoardController extends BaseController
 {
   public function show($id) {
     $board = Board::find($id);
+    $currentUser = $this->getUser();
 
     if(!$board) {
       return $this->respondWithNotFound();
     }
+
     $boardUsers = $board->users()->wherePivot('active', true)->get();
 
-    if(!$boardUsers->contains('id', $this->getUser()->id)) {
+    if(!$boardUsers->contains('id', $currentUser->id)) {
       return $this->respondWithError(null, 403, 'forbidden');
     }
 
+    $isAdmin = $board->users()->where('user_id', $currentUser->id)->wherePivot('admin', true)->first();
+
+    if($isAdmin) {
+      return $this->respond(BoardAdminResource::make($board));
+    }
     return $this->respond(BoardResource::make($board));
   }
 
@@ -46,8 +54,8 @@ class BoardController extends BaseController
     return $this->respond($board);
   }
 
-  public function join(BoardJoinRequest $request) {
-    $board = Board::find($request->board_id);
+  public function join(Request $request) {
+    $board = Board::find($request->id);
 
     if(!$board) {
       return $this->respondWithNotFound();
@@ -57,6 +65,9 @@ class BoardController extends BaseController
     $exists = $board->users()->where('user_id', $user->id)->first();
 
     if($exists) {
+      if(!$exists->pivot->active) {
+        return $this->respondWithError(null, 422, ['user' => ['Already joined, waiting for approval']]);
+      }
       return $this->respondWithError(null, 422, ['user' => ['Already joined']]);
     }
 
@@ -65,6 +76,27 @@ class BoardController extends BaseController
     }
 
     return $this->respond(false);
+  }
+
+  public function approveJoin(Request $request) {
+    $board = Board::find($request->id);
+    $boardUser = $board->users()->where('user_id', $request->uid)->first();
+
+    if(!$board || !$boardUser) {
+      return $this->respondWithNotFound();
+    }
+
+    $isAdmin = $board->users()->where('user_id', $this->getUser()->id)->wherePivot('active', true)->wherePivot('admin', true)->first();
+
+    if(!$isAdmin) {
+      return $this->respondWithError(null, 403, 'forbidden');
+    }
+
+    if($boardUser->pivot->active) {
+      return $this->respondWithError(null, 422, ['user' => ['Already approved']]);
+    }
+    
+    return $this->respond(($board->users()->updateExistingPivot($boardUser->id, ['active' => true])) ? true : false);
   }
 
   public function getCard(CardRequest $request) {
@@ -93,6 +125,8 @@ class BoardController extends BaseController
       }
     }
 
-    return $this->respond($effortByUsers);
+    $sortedEfforts = $effortByUsers->sortBy('moving_time');
+    return $sortedEfforts->values()->all();
+    return $this->respond($sortedEfforts);
   }
 }

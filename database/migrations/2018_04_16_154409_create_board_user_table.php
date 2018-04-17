@@ -22,7 +22,7 @@ class CreateBoardUserTable extends Migration
       $table->timestamps();
 
       $table->foreign('board_id')->references('id')->on('boards')->onUpdate('CASCADE')->onDelete('CASCADE');
-      $table->foreign('user_id')->references('id')->on('users')->onUpdate('CASCADE');
+      $table->foreign('user_id')->references('id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
     });
   }
 
