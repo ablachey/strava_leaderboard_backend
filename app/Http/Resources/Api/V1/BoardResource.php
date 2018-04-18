@@ -17,7 +17,7 @@ class BoardResource extends JsonResource
     return [
       'id' => $this->id,
       'name' => $this->name,
-      'athletes' => UserBoardResource::collection($this->users()->get()),
+      'athletes' => UserBoardResource::collection($this->users()->wherePivot('active', true)->get()),
     ];
   }
 }
