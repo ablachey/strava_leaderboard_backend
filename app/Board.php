@@ -11,4 +11,10 @@ class Board extends Model
   public function users() {
     return $this->belongsToMany(User::class)->withPivot('active', 'admin');
   }
+
+  public function hasAccess(User $user) {
+    $usr = $this->users()->where('user_id', $user->id)->wherePivot('active', true)->first();
+
+    return ($usr) ? true : false;
+  }
 }

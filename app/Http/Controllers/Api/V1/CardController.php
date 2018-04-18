@@ -38,6 +38,10 @@ class CardController extends BaseController
     if(!$board) {
       return $this->respondWithNotFound();
     }
+
+    if(!$board->hasAccess($this->getUser())) {
+      return $this->respondWithError(null, 403, 'forbidden');
+    }
   
     $fromDate = Carbon::now()->subDays($request->days);
     $users = $board->users()->wherePivot('active', true)->get();
@@ -71,6 +75,10 @@ class CardController extends BaseController
       return $this->respondWithNotFound();
     }
 
+    if(!$board->hasAccess($this->getUser())) {
+      return $this->respondWithError(null, 403, 'forbidden');
+    }
+
     $fromDate = Carbon::now()->subDays($request->days);
     $users = $board->users()->wherePivot('active', true)->get();
 
@@ -93,6 +101,10 @@ class CardController extends BaseController
 
     if(!$board) {
       return $this->respondWithNotFound();
+    }
+
+    if(!$board->hasAccess($this->getUser())) {
+      return $this->respondWithError(null, 403, 'forbidden');
     }
 
     $fromDate = Carbon::now()->subDays($request->days);
