@@ -63,4 +63,8 @@ class AuthController extends BaseController
   public function unauthenticate() {
     return $this->respond(JWTAuth::parseToken()->invalidate());
   }
+
+  public function refresh() {
+    return $this->respond(['token' => JWTAuth::parseToken()->refresh()]);
+  }
 }
