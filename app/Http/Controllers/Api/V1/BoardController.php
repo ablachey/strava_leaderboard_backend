@@ -20,15 +20,11 @@ class BoardController extends BaseController
       return $this->respondWithNotFound();
     }
 
-    $boardUsers = $board->users()->wherePivot('active', true)->get();
-
-    if(!$boardUsers->contains('id', $currentUser->id)) {
+    if(!$board->hasAccess($currentUser)) {
       return $this->respondWithError(null, 403, 'forbidden');
     }
 
-    $isAdmin = $board->users()->where('user_id', $currentUser->id)->wherePivot('admin', true)->first();
-
-    if($isAdmin) {
+    if($board->isAdmin($currentUser)) {
       return $this->respond(BoardAdminResource::make($board));
     }
     return $this->respond(BoardResource::make($board));
@@ -78,9 +74,7 @@ class BoardController extends BaseController
       return $this->respondWithNotFound();
     }
 
-    $isAdmin = $board->users()->where('user_id', $this->getUser()->id)->wherePivot('active', true)->wherePivot('admin', true)->first();
-
-    if(!$isAdmin) {
+    if(!$board->isAdmin($this->getUser())) {
       return $this->respondWithError(null, 403, 'forbidden');
     }
 
