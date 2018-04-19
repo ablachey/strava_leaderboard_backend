@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Api\V1\BoardRequest;
 use App\Http\Requests\Api\V1\BoardSearchRequest;
 use App\Http\Resources\Api\V1\BoardResource;
+use App\Http\Resources\Api\V1\BoardMemberResource;
 use App\Http\Resources\Api\V1\BoardAdminResource;
 use App\Board;
 
@@ -21,13 +22,13 @@ class BoardController extends BaseController
     }
 
     if(!$board->hasAccess($currentUser)) {
-      return $this->respondWithError(null, 403, 'forbidden');
+      return $this->respond(BoardResource::make($board));
     }
 
     if($board->isAdmin($currentUser)) {
       return $this->respond(BoardAdminResource::make($board));
     }
-    return $this->respond(BoardResource::make($board));
+    return $this->respond(BoardMemberResource::make($board));
   }
 
   public function search(BoardSearchRequest $request) {

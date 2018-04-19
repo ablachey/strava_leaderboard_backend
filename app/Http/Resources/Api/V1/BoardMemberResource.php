@@ -4,7 +4,7 @@ namespace App\Http\Resources\Api\V1;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BoardResource extends JsonResource
+class BoardMemberResource extends JsonResource
 {
   /**
    * Transform the resource into an array.
@@ -17,7 +17,7 @@ class BoardResource extends JsonResource
     return [
       'id' => $this->id,
       'name' => $this->name,
-      'athletes' => [],
+      'athletes' => UserBoardResource::collection($this->users()->wherePivot('active', true)->get()),
     ];
   }
 }
