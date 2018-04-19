@@ -23,6 +23,6 @@ class User extends Authenticatable
   }
 
   public function boards() {
-    return $this->belongsToMany(Board::class);
+    return $this->belongsToMany(Board::class)->withPivot('active');
   }
 }

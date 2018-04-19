@@ -9,6 +9,7 @@ Route::group(['middleware' => 'jwt.auth'], function() {
 
   Route::post('activities/sync', 'Api\V1\ActivityController@syncData');
 
+  Route::get('boards', 'Api\V1\BoardController@index');
   Route::get('boards/{id}', 'Api\V1\BoardController@show');
   Route::post('boards/search', 'Api\V1\BoardController@search');
   Route::post('boards/{id}/join', 'Api\V1\BoardController@join');

@@ -9,10 +9,17 @@ use App\Http\Requests\Api\V1\BoardSearchRequest;
 use App\Http\Resources\Api\V1\BoardResource;
 use App\Http\Resources\Api\V1\BoardMemberResource;
 use App\Http\Resources\Api\V1\BoardAdminResource;
+use App\Http\Resources\Api\V1\BoardListingResource;
 use App\Board;
 
 class BoardController extends BaseController
 {
+  public function index() {
+    $user = $this->getUser();
+
+    return $this->respond(BoardListingResource::collection($user->boards()->get()));
+  }
+
   public function show($id) {
     $board = Board::find($id);
     $currentUser = $this->getUser();
@@ -33,7 +40,7 @@ class BoardController extends BaseController
 
   public function search(BoardSearchRequest $request) {
     $boards = Board::where('name', 'LIKE', "%$request->keyword%")->orderBy('name', 'asc')->get();
-    return $this->respond($boards);
+    return $this->respond(BoardResource::collection($boards));
   }
 
   public function store(BoardRequest $request) {
