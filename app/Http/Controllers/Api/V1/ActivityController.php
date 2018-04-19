@@ -16,7 +16,7 @@ class ActivityController extends BaseController
   public function syncData() {
     $before = Carbon::now();
     $after = Carbon::now()->subMonth();
-    $syncObj = new Synchronizer($before->format('U'), $after->format('U'), $this->getUser());
+    $syncObj = new Synchronizer($this->getUser(), $after->format('U'), $before->format('U'));
 
     return $this->respond($syncObj->sync());
   }

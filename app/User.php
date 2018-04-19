@@ -25,4 +25,10 @@ class User extends Authenticatable
   public function boards() {
     return $this->belongsToMany(Board::class)->withPivot('active');
   }
+
+  public function getAuthHeader() {
+    return [
+      'Authorization' => 'Bearer ' . $this->token
+    ];
+  }
 }

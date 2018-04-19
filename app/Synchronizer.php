@@ -7,6 +7,7 @@ use App\User;
 use App\Activity;
 use App\Effort;
 use \Carbon\Carbon;
+use App\Jobs\GetStravaActivity;
 
 class Synchronizer
 {
@@ -14,7 +15,7 @@ class Synchronizer
   protected $before;
   protected $after;
 
-  public function __construct($before, $after, User $user) {
+  public function __construct(User $user, $after, $before) {
     $this->user = $user;
     $this->before = $before;
     $this->after = $after;
@@ -26,13 +27,21 @@ class Synchronizer
 
     $client = new Client();
     $data = [];
-
+    $paramItems = [];
+    if($this->before) {
+      $paramItems['before'] = $this->before;
+    }
+    if($this->after) {
+      $paramItems['after'] = $this->after;
+    }
+  
     do {
-      $params = http_build_query(['before' => $this->before, 'after' => $this->after, 'page' => $page]);
+      $paramItems['page'] = $page;
+      $params = http_build_query($paramItems);
       $url = env('STRAVA_OWNER_URL') . '/activities?' . $params;
-
+      
       $result = $client->get($url, [
-        'headers' => $this->getAuthHeader()
+        'headers' => $this->user->getAuthHeader()
       ]);
       
       $data = json_decode($result->getBody());
@@ -47,42 +56,10 @@ class Synchronizer
       $activity = Activity::where('strava_id', $item->id)->first();
 
       if(!$activity) {
-        $this->getActivity($item->id);
+        GetStravaActivity::dispatch($this->user, $item->id);
       }
     }
 
     return true;
-  }
-
-  public function getActivity($id) {
-    $client = new Client();
-    $url = env('STRAVA_ACTIVITY_URL') . '/' . $id;
-
-    $result = $client->get($url, [
-      'headers' => $this->getAuthHeader()
-    ]);
-    
-    $data = json_decode($result->getBody(), true);
-    $data['strava_id'] = $data['id'];
-    $data['start_date_local'] = new Carbon($data['start_date_local']);
-    unset($data['id']);
-
-    $activity = new Activity($data);
-    $this->user->activities()->save($activity);
-    
-    foreach($data['best_efforts'] as $bestEffort) {
-      $bestEffort['strava_id'] = $bestEffort['id'];
-      unset($bestEffort['id']);
-      $effort = new Effort($bestEffort);
-      $activity->efforts()->save($effort);
-    }
-
-    return $activity;
-  }
-
-  private function getAuthHeader() {
-    return [
-      'Authorization' => 'Bearer ' . $this->user->token
-    ];
   }
 }
