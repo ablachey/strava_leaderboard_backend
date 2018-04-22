@@ -23,7 +23,7 @@ class User extends Authenticatable
   }
 
   public function boards() {
-    return $this->belongsToMany(Board::class)->withPivot('active');
+    return $this->belongsToMany(Board::class)->withPivot('active', 'admin');
   }
 
   public function getAuthHeader() {

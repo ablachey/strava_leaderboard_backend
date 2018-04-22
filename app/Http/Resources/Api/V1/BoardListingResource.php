@@ -14,10 +14,21 @@ class BoardListingResource extends JsonResource
    */
   public function toArray($request)
   {
+    $athletes = [];
+    if($this->pivot->active) {
+      if($this->pivot->admin) {
+        $athletes = UserBoardResource::collection($this->users()->get());
+      }
+      else {
+        $athletes = UserBoardResource::collection($this->users()->wherePivot('active', true)->get());
+      }
+    }
     return [
       'id' => $this->id,
       'name' => $this->name,
+      'athletes' => $athletes,
       'active' => $this->pivot->active,
+      'admin' => $this->pivot->admin,
     ];
   }
 }
