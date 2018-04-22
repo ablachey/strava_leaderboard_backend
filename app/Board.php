@@ -21,4 +21,9 @@ class Board extends Model
     $admin = $this->users()->where('user_id', $user->id)->wherePivot('active', true)->wherePivot('admin', true)->first();
     return ($admin) ? true : false;
   }
+
+  public function isMember(User $user) {
+    $member = $this->users()->where('user_id', $user->id)->first();
+    return ($member) ? true : false;
+  }
 }

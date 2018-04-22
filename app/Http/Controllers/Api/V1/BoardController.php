@@ -39,7 +39,17 @@ class BoardController extends BaseController
 
   public function search(BoardSearchRequest $request) {
     $boards = Board::where('name', 'LIKE', "%$request->keyword%")->orderBy('name', 'asc')->get();
-    return $this->respond(BoardResource::collection($boards));
+    $retBoards = collect();
+    $currentUser = $this->getUser();
+
+    foreach($boards as $board) {
+      $bd = collect();
+      $bd->put('id', $board->id);
+      $bd->put('name', $board->name);
+      $bd->put('isJoined', $board->isMember($currentUser));
+      $retBoards->push($bd);
+    }
+    return $this->respond($retBoards);
   }
 
   public function store(BoardRequest $request) {
