@@ -16,7 +16,7 @@ class BoardController extends BaseController
 {
   public function index() {
     $user = $this->getUser();
-    return $this->respond(BoardListingResource::collection($user->boards()->get()));
+    return $this->respond(BoardListingResource::collection($user->boards()->orderBy('updated_at', 'desc')->get()));
   }
 
   public function show($id) {

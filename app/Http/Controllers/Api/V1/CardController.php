@@ -92,7 +92,7 @@ class CardController extends BaseController
     }
 
     $sortedActivities = ($attr['dir'] == 'desc') ? $acts->sortByDesc($attr['field']) : $acts->sortBy($attr['field']);
-    return $sortedActivities->values()->all();
+    return $this->respond($sortedActivities->values()->all());
   }
 
   public function getOverall(OverallRequest $request) {
@@ -126,6 +126,6 @@ class CardController extends BaseController
     }
 
     $sortedData = (self::OVERALLTYPES[$request->type]['dir'] == 'desc') ? $data->sortByDesc('value') : $data->sortBy('value');
-    return $sortedData->values()->all();
+    return $this->respond($sortedData->values()->all());
   }
 }
