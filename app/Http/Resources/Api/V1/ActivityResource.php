@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Api\V1;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use \Carbon\Carbon;
 class ActivityResource extends JsonResource
 {
   /**
@@ -14,6 +14,7 @@ class ActivityResource extends JsonResource
    */
   public function toArray($request)
   {
+    $sdt = new Carbon($this->start_date_time);
     return [
       'id' => $this->id,
       'strava_id' => $this->strava_id,
@@ -22,7 +23,7 @@ class ActivityResource extends JsonResource
       'moving_time' => $this->moving_time,
       'elapsed_time' => $this->elapsed_time,
       'type' => $this->type,
-      'start_date_local' => $this->start_date_local,
+      'start_date_local' => $sdt->format('d M H:i'),
       'has_heartrate' => $this->has_heartrate,
       'average_heartrate' => $this->average_heartrate,
       'max_heartrate' => $this->max_heartrate,
