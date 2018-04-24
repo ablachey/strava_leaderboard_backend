@@ -14,7 +14,7 @@ class ActivityResource extends JsonResource
    */
   public function toArray($request)
   {
-    $sdt = new Carbon($this->start_date_time);
+    $sdt = new Carbon($this->start_date_local);
     return [
       'id' => $this->id,
       'strava_id' => $this->strava_id,
