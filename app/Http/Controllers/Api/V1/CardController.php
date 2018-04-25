@@ -18,7 +18,7 @@ class CardController extends BaseController
 {
   const HIGHESTTYPES = [
     'longest-run' => 
-      ['field' => 'moving_time', 'dir' => 'desc'],
+      ['field' => 'elapsed_time', 'dir' => 'desc'],
     'furthest-run' => 
       ['field' => 'distance', 'dir' => 'desc'],
     'max-calories' => 
@@ -29,7 +29,7 @@ class CardController extends BaseController
     'overall-distance' => 
       ['field' => 'distance', 'dir' => 'desc', 'unit' => 'metre'],
     'overall-time' =>
-      ['field' => 'moving_time', 'dir' => 'desc', 'unit' => 'second'],
+      ['field' => 'elapsed_time', 'dir' => 'desc', 'unit' => 'second'],
   ];
 
   public function getCard(CardRequest $request) {
@@ -52,17 +52,17 @@ class CardController extends BaseController
       $efforts = collect();
       
       foreach($activities as $activity) {
-        $effort = $activity->efforts()->where('name', Effort::getType($request->type))->orderBy('moving_time', 'asc')->first();
+        $effort = $activity->efforts()->where('name', Effort::getType($request->type))->orderBy('elapsed_time', 'asc')->first();
         $efforts->push($effort);
       }
-      $e = $efforts->where('moving_time', $efforts->min('moving_time'))->first();
+      $e = $efforts->where('elapsed_time', $efforts->min('elapsed_time'))->first();
 
       if($e) {
         $effortByUsers->push(EffortResource::make($e));
       }
     }
 
-    $sortedEfforts = $effortByUsers->sortBy('moving_time');
+    $sortedEfforts = $effortByUsers->sortBy('elapsed_time');
     
     return $this->respond($sortedEfforts->values()->all());
   }
