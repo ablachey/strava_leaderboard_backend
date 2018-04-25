@@ -8,6 +8,7 @@ Route::group(['middleware' => 'jwt.auth'], function() {
   Route::post('auth/logout', 'Api\V1\AuthController@unauthenticate');
 
   Route::post('activities/sync', 'Api\V1\ActivityController@syncData');
+  Route::post('activities/sync/board/{id}', 'Api\V1\ActivityController@syncBoardData');
 
   Route::get('boards', 'Api\V1\BoardController@index');
   Route::get('boards/{id}', 'Api\V1\BoardController@show');
