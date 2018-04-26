@@ -22,7 +22,6 @@ class EffortResource extends JsonResource
       'moving_time' => $this->moving_time,
       'distance' => $this->distance,
       'activity' => ($this->activity_id) ? ActivityResource::make($this->activity) : null,
-      'user' => ($this->activity_id) ? UserResource::make($this->activity()->first()->user) : null,
     ];
   }
 }
