@@ -18,8 +18,12 @@ class ActivityController extends BaseController
     $before = Carbon::now();
     $after = Carbon::now()->subDays(3);//Carbon::now()->subMonth();
     
+    /*$lastMonth = new Carbon('first day of last month');
+    $after = new Carbon($lastMonth->format('Y-m-d'));
+    return $after;*/
+    
     $syncObj = new Synchronizer($this->getUser(), $after->format('U'), $before->format('U'));
-
+    
     return $this->respond($syncObj->sync());
   }
 

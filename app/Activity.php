@@ -32,4 +32,8 @@ class Activity extends Model
   public function location() {
     return $this->hasOne(Location::class);
   }
+
+  public function splits() {
+    return $this->hasMany(Split::class);
+  }
 }

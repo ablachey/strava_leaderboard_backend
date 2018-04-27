@@ -16,10 +16,10 @@ class CreateLocationsTable extends Migration
     Schema::create('locations', function (Blueprint $table) {
       $table->increments('id');
       $table->integer('activity_id')->unsigned();
-      $table->double('start_lat', 9, 6);
-      $table->double('start_lng', 9, 6);
-      $table->double('end_lat', 9, 6);
-      $table->double('end_lng', 9, 6);
+      $table->double('start_lat');
+      $table->double('start_lng');
+      $table->double('end_lat');
+      $table->double('end_lng');
       $table->string('map_id');
       $table->string('polyline', 8000);
       $table->string('summary_polyline', 2000);

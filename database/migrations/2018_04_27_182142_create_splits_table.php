@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEffortsTable extends Migration
+class CreateSplitsTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,18 +13,15 @@ class CreateEffortsTable extends Migration
    */
   public function up()
   {
-    Schema::create('efforts', function (Blueprint $table) {
+    Schema::create('splits', function (Blueprint $table) {
       $table->increments('id');
       $table->integer('activity_id')->unsigned();
-      $table->integer('strava_id')->unsigned()->unique();
-      $table->string('name');
+      $table->double('distance')->unsigned();
       $table->integer('elapsed_time')->unsigned();
       $table->integer('moving_time')->unsigned();
-      $table->double('distance')->unsigned();
-      $table->timestamp('start_date_local');
-      $table->integer('start_index')->unsigned();
-      $table->integer('end_index')->unsigned();
-      $table->integer('pr_rank')->unsigned()->nullable();
+      $table->integer('split')->unsigned();
+      $table->double('average_heartrate')->unsigned()->nullable();
+      $table->double('average_speed')->unsigned();
       $table->timestamps();
 
       $table->foreign('activity_id')->references('id')->on('activities')->onUpdate('CASCADE')->onDelete('CASCADE');
@@ -38,9 +35,9 @@ class CreateEffortsTable extends Migration
    */
   public function down()
   {
-    Schema::table('efforts', function(Blueprint $table) {
-      $table->dropForeign('efforts_activity_id_foreign');
+    Schema::table('splits', function(Blueprint $table) {
+      $table->dropForeign('splits_activity_id_foreign');
     });
-    Schema::dropIfExists('efforts');
+    Schema::dropIfExists('splits');
   }
 }

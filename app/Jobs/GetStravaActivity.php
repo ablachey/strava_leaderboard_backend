@@ -13,6 +13,7 @@ use App\User;
 use App\Activity;
 use App\Effort;
 use App\Location;
+use App\Split;
 use \Carbon\Carbon;
 
 class GetStravaActivity implements ShouldQueue
@@ -73,9 +74,17 @@ class GetStravaActivity implements ShouldQueue
     foreach($data['best_efforts'] as $bestEffort) {
       $bestEffort['strava_id'] = $bestEffort['id'];
       unset($bestEffort['id']);
-      $bestEffort['start_date_local'] = new Carbon($bestEffort['start_date_local']);
-      $effort = new Effort($bestEffort);
-      $activity->efforts()->save($effort);
+      $be = Effort::where('strava_id', $bestEffort['strava_id'])->first();
+      if(!$be) {
+        $bestEffort['start_date_local'] = new Carbon($bestEffort['start_date_local']);
+        $effort = new Effort($bestEffort);
+        $activity->efforts()->save($effort);
+      }
+    }
+
+    foreach($data['splits_metric'] as $split) {
+      $sp = new Split($split);
+      $activity->splits()->save($sp);
     }
   }
 }
