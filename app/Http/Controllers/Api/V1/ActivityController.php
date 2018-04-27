@@ -37,13 +37,14 @@ class ActivityController extends BaseController
     foreach($users as $user) {
       $lastActivity = $user->activities()->orderBy('start_date_local', 'desc')->first();
 
-      $lastActDate = Carbon::now()->subMonth();
+      $lastMonth = new Carbon('first day of last month');
+      $after = new Carbon($lastMonth->format('Y-m-d'));
 
       if($lastActivity) {
-        $lastActDate = new Carbon($lastActivity->start_date_local);
+        $after = new Carbon($lastActivity->start_date_local);
       }
       
-      $synchronizer = new Synchronizer($user, $lastActDate->format('U'), $before->format('U'));
+      $synchronizer = new Synchronizer($user, $after->format('U'), $before->format('U'));
       $synchronizer->sync();
     }
 
