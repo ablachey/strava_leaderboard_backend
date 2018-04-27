@@ -12,6 +12,7 @@ use GuzzleHttp\Client;
 use App\User;
 use App\Activity;
 use App\Effort;
+use App\Location;
 use \Carbon\Carbon;
 
 class GetStravaActivity implements ShouldQueue
@@ -48,15 +49,31 @@ class GetStravaActivity implements ShouldQueue
     
     $data = json_decode($result->getBody(), true);
     $data['strava_id'] = $data['id'];
-    $data['start_date_local'] = new Carbon($data['start_date_local']);
     unset($data['id']);
+
+    if(Activity::where('strava_id', $data['strava_id'])->first()) {
+      return true;
+    }
+
+    $data['start_date_local'] = new Carbon($data['start_date_local']);
 
     $activity = new Activity($data);
     $this->user->activities()->save($activity);
+
+    $loc['start_lat'] = $data['start_latlng'][0];
+    $loc['start_lng'] = $data['start_latlng'][1];
+    $loc['end_lat'] = $data['end_latlng'][0];
+    $loc['end_lng'] = $data['end_latlng'][1];
+    $loc['map_id'] = $data['map']['id'];
+    $loc['polyline'] = $data['map']['polyline'];
+    $loc['summary_polyline'] = $data['map']['summary_polyline'];
+
+    $activity->location()->save(new Location($loc));
     
     foreach($data['best_efforts'] as $bestEffort) {
       $bestEffort['strava_id'] = $bestEffort['id'];
       unset($bestEffort['id']);
+      $bestEffort['start_date_local'] = new Carbon($bestEffort['start_date_local']);
       $effort = new Effort($bestEffort);
       $activity->efforts()->save($effort);
     }

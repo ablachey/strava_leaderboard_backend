@@ -16,7 +16,8 @@ class ActivityController extends BaseController
 {
   public function syncData() {
     $before = Carbon::now();
-    $after = Carbon::now()->subMonth();
+    $after = Carbon::now()->subDays(3);//Carbon::now()->subMonth();
+    
     $syncObj = new Synchronizer($this->getUser(), $after->format('U'), $before->format('U'));
 
     return $this->respond($syncObj->sync());
@@ -34,7 +35,12 @@ class ActivityController extends BaseController
 
     foreach($users as $user) {
       $lastActivity = $user->activities()->orderBy('start_date_local', 'desc')->first();
-      $lastActDate = new Carbon($lastActivity->start_date_local);
+
+      $lastActDate = Carbon::now()->subMonth();
+
+      if($lastActivity) {
+        $lastActDate = new Carbon($lastActivity->start_date_local);
+      }
       
       $synchronizer = new Synchronizer($user, $lastActDate->format('U'), $before->format('U'));
       $synchronizer->sync();

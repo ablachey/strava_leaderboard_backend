@@ -28,4 +28,8 @@ class Activity extends Model
   public function efforts() {
     return $this->hasMany(Effort::class);
   }
+
+  public function location() {
+    return $this->hasOne(Location::class);
+  }
 }

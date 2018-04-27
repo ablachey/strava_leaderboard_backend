@@ -21,6 +21,10 @@ class CreateEffortsTable extends Migration
       $table->integer('elapsed_time')->unsigned();
       $table->integer('moving_time')->unsigned();
       $table->double('distance')->unsigned();
+      $table->timestamp('start_date_local');
+      $table->integer('start_index')->unsigned();
+      $table->integer('end_index')->unsigned();
+      $table->integer('pr_rank')->unsigned()->nullable();
       $table->timestamps();
 
       $table->foreign('activity_id')->references('id')->on('activities')->onUpdate('CASCADE')->onDelete('CASCADE');

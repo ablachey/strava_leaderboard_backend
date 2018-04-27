@@ -13,6 +13,10 @@ class Effort extends Model
     'elapsed_time',
     'moving_time',
     'distance',
+    'start_date_local',
+    'start_index',
+    'end_index',
+    'pr_rank',
   ];
 
   const TYPES = [
