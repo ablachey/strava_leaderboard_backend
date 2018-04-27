@@ -14,6 +14,7 @@ use App\Activity;
 use App\Effort;
 use App\Location;
 use App\Split;
+use App\Lap;
 use \Carbon\Carbon;
 
 class GetStravaActivity implements ShouldQueue
@@ -85,6 +86,17 @@ class GetStravaActivity implements ShouldQueue
     foreach($data['splits_metric'] as $split) {
       $sp = new Split($split);
       $activity->splits()->save($sp);
+    }
+
+    foreach($data['laps'] as $lap) {
+      $lap['strava_id'] = $lap['id'];
+      unset($lap['id']);
+      $storedLap = Lap::where('strava_id', $lap['strava_id'])->first();
+      if(!$storedLap) {
+        $lap['start_date_local'] = new Carbon($lap['start_date_local']);
+        $lp = new Lap($lap);
+        $activity->laps()->save($lp);
+      }
     }
   }
 }

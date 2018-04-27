@@ -15,7 +15,7 @@ class CreateActivitiesTable extends Migration
   {
     Schema::create('activities', function (Blueprint $table) {
       $table->increments('id');
-      $table->integer('strava_id')->unsigned()->unique();
+      $table->bigInteger('strava_id')->unsigned()->unique();
       $table->integer('user_id')->unsigned();
       $table->string('name');
       $table->double('distance')->unsigned();

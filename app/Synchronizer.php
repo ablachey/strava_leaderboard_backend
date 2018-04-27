@@ -62,17 +62,4 @@ class Synchronizer
 
     return true;
   }
-
-  public function test($id) {
-    $client = new Client();
-    $url = env('STRAVA_ACTIVITY_URL') . '/' . $id;
-    
-    $result = $client->get($url, [
-      'headers' => $this->user->getAuthHeader()
-    ]);
-    
-    $data = json_decode($result->getBody(), true);
-    
-    return $data;
-  }
 }

@@ -36,4 +36,8 @@ class Activity extends Model
   public function splits() {
     return $this->hasMany(Split::class);
   }
+
+  public function laps() {
+    return $this->hasMany(Lap::class);
+  }
 }
