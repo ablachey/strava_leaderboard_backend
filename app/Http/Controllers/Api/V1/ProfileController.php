@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\Api\V1\ProfileMonthRequest;
 use App\Http\Requests\Api\V1\ProfileEffortRequest;
 use \Carbon\Carbon;
+use App\Effort;
 
 class ProfileController extends BaseController
 {
@@ -121,7 +122,36 @@ class ProfileController extends BaseController
     return $this->respond($ret);
   }
 
-  public function efforts(ProfileEffortRequest $reques) {
+  public function efforts(ProfileEffortRequest $request) {
+    $user = $this->getUser();
 
+    $monthStart = new Carbon('first day of this month');
+    $monthFirstDay = new Carbon($monthStart->format('Y-m-d'));
+
+    $days = array();
+    $values = array();
+
+    $activities = $user->activities()
+                    ->where('type', 'run')
+                    ->where('start_date_local', '>=', $monthFirstDay)
+                    ->orderBy('start_date_local', 'asc')
+                    ->get();
+
+    foreach($activities as $activity) {
+      $effort = $activity->efforts()->where('name', Effort::getType($request->type))->first();
+      if($effort) {
+        $d = new Carbon($effort->start_date_local);
+        array_push($days, $d->format('d M'));
+        //$pace = ($effort->elapsed_time / ($effort->distance / 1000)) / 60;
+        array_push($values, $effort->elapsed_time);
+      }
+    }
+
+    $ret = [
+      'values' => $values,
+      'days' => $days
+    ];
+
+    return $this->respond($ret);
   }
 }
