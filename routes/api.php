@@ -19,4 +19,8 @@ Route::group(['middleware' => 'jwt.auth'], function() {
   Route::get('boards/{id}/cards', 'Api\V1\CardController@getCard');
   Route::get('boards/{id}/highest', 'Api\V1\CardController@getHighest');
   Route::get('boards/{id}/overall', 'Api\V1\CardController@getOverall');
+
+  Route::get('profile/accumulated', 'Api\V1\ProfileController@accu');
+  Route::get('profile/month', 'Api\V1\ProfileController@month');
+  Route::get('profile/efforts', 'Api\V1\ProfileController@efforts');
 });
