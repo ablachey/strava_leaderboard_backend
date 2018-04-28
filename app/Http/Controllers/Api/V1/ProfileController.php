@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\ProfileMonthRequest;
 use App\Http\Requests\Api\V1\ProfileEffortRequest;
 use \Carbon\Carbon;
 use App\Effort;
+use App\User;
 
 class ProfileController extends BaseController
 {
@@ -18,8 +19,11 @@ class ProfileController extends BaseController
       ['field' => 'distance', 'dir' => 'asc'],
   ];
 
-  public function accu() {
-    $user = $this->getUser();
+  public function accu(User $user = null) {
+    if($user === null) {
+      $user = $this->getUser();
+    }
+    
     
     $values['count'] = 0;
     $values['time'] = 0;
@@ -40,8 +44,10 @@ class ProfileController extends BaseController
     return $this->respond($values);
   }
 
-  public function month(ProfileMonthRequest $request) {
-    $user  = $this->getUser();
+  public function month(ProfileMonthRequest $request, User $user = null) {
+    if($user === null) {
+      $user = $this->getUser();
+    }
 
     $lastMonthBegin = new Carbon('first day of last month');
     $lastMonthFirstDay = new Carbon($lastMonthBegin->format('Y-m-d'));
@@ -122,8 +128,10 @@ class ProfileController extends BaseController
     return $this->respond($ret);
   }
 
-  public function efforts(ProfileEffortRequest $request) {
-    $user = $this->getUser();
+  public function efforts(ProfileEffortRequest $request, User $user = null) {
+    if($user === null) {
+      $user = $this->getUser();
+    }
 
     $monthStart = new Carbon('first day of this month');
     $monthFirstDay = new Carbon($monthStart->format('Y-m-d'));
