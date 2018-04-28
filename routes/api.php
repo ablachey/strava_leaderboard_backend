@@ -20,7 +20,8 @@ Route::group(['middleware' => 'jwt.auth'], function() {
   Route::get('boards/{id}/highest', 'Api\V1\CardController@getHighest');
   Route::get('boards/{id}/overall', 'Api\V1\CardController@getOverall');
 
-  Route::get('profile/accumulated', 'Api\V1\ProfileController@accu');
-  Route::get('profile/month', 'Api\V1\ProfileController@month');
-  Route::get('profile/efforts', 'Api\V1\ProfileController@efforts');
+  Route::get('profile/{id}', 'Api\V1\ProfileController@user');
+  Route::get('profile/{id}/accumulated', 'Api\V1\ProfileController@accu');
+  Route::get('profile/{id}/month', 'Api\V1\ProfileController@month');
+  Route::get('profile/{id}/efforts', 'Api\V1\ProfileController@efforts');
 });

@@ -9,6 +9,7 @@ use App\Http\Requests\Api\V1\ProfileEffortRequest;
 use \Carbon\Carbon;
 use App\Effort;
 use App\User;
+use App\Http\Resources\Api\V1\UserResource;
 
 class ProfileController extends BaseController
 {
@@ -19,9 +20,21 @@ class ProfileController extends BaseController
       ['field' => 'distance', 'dir' => 'asc'],
   ];
 
-  public function accu(User $user = null) {
-    if($user === null) {
-      $user = $this->getUser();
+  public function user(Request $request) {
+    $user = User::find($request->id);
+
+    if(!$user) {
+      return $this->respondWithNotFound();
+    }
+
+    return $this->respond(UserResource::make($user));
+  }
+
+  public function accu(Request $request) {
+    $user = User::find($request->id);
+
+    if(!$user) {
+      return $this->respondWithNotFound();
     }
     
     
@@ -44,9 +57,11 @@ class ProfileController extends BaseController
     return $this->respond($values);
   }
 
-  public function month(ProfileMonthRequest $request, User $user = null) {
-    if($user === null) {
-      $user = $this->getUser();
+  public function month(ProfileMonthRequest $request) {
+    $user = User::find($request->id);
+
+    if(!$user) {
+      return $this->respondWithNotFound();
     }
 
     $lastMonthBegin = new Carbon('first day of last month');
@@ -128,9 +143,11 @@ class ProfileController extends BaseController
     return $this->respond($ret);
   }
 
-  public function efforts(ProfileEffortRequest $request, User $user = null) {
-    if($user === null) {
-      $user = $this->getUser();
+  public function efforts(ProfileEffortRequest $request) {
+    $user = User::find($request->id);
+
+    if(!$user) {
+      return $this->respondWithNotFound();
     }
 
     $monthStart = new Carbon('first day of this month');
