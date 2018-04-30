@@ -9,6 +9,7 @@ use App\Http\Requests\Api\V1\ProfileEffortRequest;
 use \Carbon\Carbon;
 use App\Effort;
 use App\User;
+use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Resources\Api\V1\UserResource;
 
 class ProfileController extends BaseController
@@ -37,6 +38,8 @@ class ProfileController extends BaseController
       return $this->respondWithNotFound();
     }
     
+    $ac = new ActivityController();
+    $ac->syncData($user);
     
     $values['count'] = 0;
     $values['time'] = 0;

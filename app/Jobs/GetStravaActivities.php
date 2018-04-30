@@ -1,6 +1,12 @@
 <?php
 
-namespace App;
+namespace App\Jobs;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 
 use GuzzleHttp\Client;
 use App\User;
@@ -9,19 +15,33 @@ use App\Effort;
 use \Carbon\Carbon;
 use App\Jobs\GetStravaActivity;
 
-class Synchronizer
+class GetStravaActivities implements ShouldQueue
 {
+  use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
   protected $user;
   protected $before;
   protected $after;
 
-  public function __construct(User $user, $after, $before) {
+  /**
+   * Create a new job instance.
+   *
+   * @return void
+   */
+  public function __construct(User $user, $after, $before)
+  {
     $this->user = $user;
     $this->before = $before;
     $this->after = $after;
   }
 
-  public function sync() {
+  /**
+   * Execute the job.
+   *
+   * @return void
+   */
+  public function handle()
+  {
     $acts = collect();
     $page = 1;
 
@@ -59,7 +79,5 @@ class Synchronizer
         GetStravaActivity::dispatch($this->user, $item->id);
       }
     }
-
-    return true;
   }
 }

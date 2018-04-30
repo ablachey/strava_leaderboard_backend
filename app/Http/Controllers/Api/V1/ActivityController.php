@@ -6,22 +6,22 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use JWTAuth;
 use \Carbon\Carbon;
-use App\Synchronizer;
 use App\User;
 use App\Activity;
 use App\Effort;
 use App\Board;
+use App\Jobs\GetStravaActivities;
 
 class ActivityController extends BaseController
 {
-  public function syncData() {
+  public function syncData(User $user) {
     $before = Carbon::now();
     $lastMonth = new Carbon('first day of last month');
     $after = new Carbon($lastMonth->format('Y-m-d'));
     
-    $syncObj = new Synchronizer($this->getUser(), $after->format('U'), $before->format('U'));
+    GetStravaActivities::dispatch($user, $after->format('U'), $before->format('U'));
     
-    return $this->respond($syncObj->sync());
+    return $this->respond(true);
   }
 
   public function syncBoardData($id) {
@@ -44,8 +44,7 @@ class ActivityController extends BaseController
         $after = new Carbon($lastActivity->start_date_local);
       }
       
-      $synchronizer = new Synchronizer($user, $after->format('U'), $before->format('U'));
-      $synchronizer->sync();
+      GetStravaActivities::dispatch($user, $after->format('U'), $before->format('U'));
     }
 
     return $this->respond(true);

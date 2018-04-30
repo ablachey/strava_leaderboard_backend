@@ -10,7 +10,6 @@ use GuzzleHttp\Client;
 use App\User;
 use JWTAuth;
 use App\Http\Resources\Api\V1\UserResource;
-use App\Synchronizer;
 use \Carbon\Carbon;
 
 class AuthController extends BaseController
