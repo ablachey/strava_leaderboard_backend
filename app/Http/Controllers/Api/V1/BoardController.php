@@ -101,4 +101,18 @@ class BoardController extends BaseController
     
     return $this->respond(($board->users()->updateExistingPivot($boardUser->id, ['active' => true])) ? true : false);
   }
+
+  public function destroy($id) {
+    $board = Board::find($id);
+
+    if(!$board) {
+      return $this->respondWithNotFound();
+    }
+
+    if(!$board->isAdmin($this->getUser())) {
+      return $this->respondWithError(null, 403, 'forbidden');
+    }
+
+    return $this->respond($board->delete());
+  }
 }

@@ -16,6 +16,8 @@ Route::group(['middleware' => 'jwt.auth'], function() {
   Route::post('boards/{id}/join', 'Api\V1\BoardController@join');
   Route::post('boards/{id}/join/{uid}/approve', 'Api\V1\BoardController@approveJoin');
   Route::post('boards', 'Api\V1\BoardController@store');
+  Route::delete('boards/{id}', 'Api\V1\BoardController@destroy');
+  
   Route::get('boards/{id}/cards', 'Api\V1\CardController@getCard');
   Route::get('boards/{id}/highest', 'Api\V1\CardController@getHighest');
   Route::get('boards/{id}/overall', 'Api\V1\CardController@getOverall');
