@@ -11,6 +11,7 @@ use App\User;
 use JWTAuth;
 use App\Http\Resources\Api\V1\UserResource;
 use \Carbon\Carbon;
+use App\Jobs\GetStravaActivities;
 
 class AuthController extends BaseController
 {
@@ -49,6 +50,7 @@ class AuthController extends BaseController
     $jwt = JWTAuth::fromUser($user, []);
 
     if($jwt) {
+      GetStravaActivities::dispatch($user, null, null);
       return $this->respond(['token' => $jwt]);
     }
     

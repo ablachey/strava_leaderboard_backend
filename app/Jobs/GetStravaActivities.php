@@ -55,6 +55,8 @@ class GetStravaActivities implements ShouldQueue
       $paramItems['after'] = $this->after;
     }
   
+    $paramItems['per_page'] = 100;
+
     do {
       $paramItems['page'] = $page;
       $params = http_build_query($paramItems);
@@ -78,6 +80,7 @@ class GetStravaActivities implements ShouldQueue
       if(!$activity) {
         GetStravaActivity::dispatch($this->user, $item->id);
       }
+      sleep(1);
     }
   }
 }
