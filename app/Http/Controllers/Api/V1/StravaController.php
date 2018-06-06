@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Api\V1;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\BaseController;
 use GuzzleHttp\Client;
+use App\Activity;
+use App\Jobs\GetStravaActivity;
+use App\User;
 
 class StravaController extends BaseController
 {
@@ -54,6 +57,24 @@ class StravaController extends BaseController
   }
 
   public function postHook(Request $request) {
-    
+    if($request->object_type === 'activity') {
+      switch ($request->aspect_type) {
+        case 'create':
+          $user = User::where('strava_id', $request->owner_id)->first();
+          $activity = Activity::where('strava_id', $request->object_id)->first();
+          if(!$activity && $user) {
+            GetStravaActivity::dispatch($user, $request->object_id);
+          }
+          break;
+        case 'update':
+          break;
+        case 'delete':
+          break;
+        default:
+          break;
+      }
+    }
+  
+    return $this->respond([]);
   }
 }
