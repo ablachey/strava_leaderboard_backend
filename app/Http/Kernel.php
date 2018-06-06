@@ -45,7 +45,6 @@ class Kernel extends HttpKernel
 
         'strava' => [
           'throttle:300,1',
-          'stv',
         ],
     ];
 
