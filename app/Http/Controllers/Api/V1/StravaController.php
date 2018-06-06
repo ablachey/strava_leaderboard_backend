@@ -20,6 +20,10 @@ class StravaController extends BaseController
         ]
       ]
     );
+
+    $data = json_decode($result->getBody());
+
+    return $this->respond($data);
   }
 
   public function view() {
