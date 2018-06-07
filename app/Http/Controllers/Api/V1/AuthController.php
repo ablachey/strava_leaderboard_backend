@@ -41,10 +41,13 @@ class AuthController extends BaseController
       'profile_pic_medium' => $data->athlete->profile_medium,
     ];
 
-    $user = User::updateOrCreate($userData);
+    $user = User::where('email', $userData['email'])->first();
     
     if(!$user) {
-      return $this->respondWithNotFound();
+      $user = User::create($userData);
+    }
+    else {
+      $user->update($userData);
     }
 
     $jwt = JWTAuth::fromUser($user, []);
