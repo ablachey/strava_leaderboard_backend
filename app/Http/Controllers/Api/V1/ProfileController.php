@@ -9,7 +9,6 @@ use App\Http\Requests\Api\V1\ProfileEffortRequest;
 use \Carbon\Carbon;
 use App\Effort;
 use App\User;
-//use App\Http\Controllers\Api\V1\ActivityController;
 use App\Http\Resources\Api\V1\UserResource;
 
 class ProfileController extends BaseController
@@ -38,17 +37,21 @@ class ProfileController extends BaseController
       return $this->respondWithNotFound();
     }
     
-    //REMOVED AFTER WEBHOOK IMPLEMENTATION
-    /*$ac = new ActivityController();
-    $ac->syncData($user);*/
-    
     $values['count'] = 0;
     $values['time'] = 0;
     $values['distance'] = 0;
     $values['calories'] = 0;
+
+    $values['countPrev'] = 0;
+    $values['timePrev'] = 0;
+    $values['distancePrev'] = 0;
+    $values['caloriesPrev'] = 0;
     
     $month = new Carbon('first day of this month');
     $firstDay = new Carbon($month->format('Y-m-d'));
+
+    $monthPrev = new Carbon('first day of last month');
+    $firstDayPrev = new Carbon($monthPrev->format('Y-m-d'));
 
     $activities = $user->activities()->where('type', 'run')->where('start_date_local', '>=', $firstDay)->get();
 
@@ -58,6 +61,20 @@ class ProfileController extends BaseController
       $values['distance'] = $values['distance'] + $activity->distance;
       $values['calories'] = $values['calories'] + $activity->calories;
     }
+
+    $activitiesPrev = $user->activities()
+                      ->where('type', 'run')
+                      ->where('start_date_local', '>=', $firstDayPrev)
+                      ->where('start_date_local', '<', $firstDay)
+                      ->get();
+
+    foreach($activitiesPrev as $ap) {
+      $values['countPrev'] = $values['countPrev'] + 1;
+      $values['timePrev'] = $values['timePrev'] + $ap->elapsed_time;
+      $values['distancePrev'] = $values['distancePrev'] + $ap->distance;
+      $values['caloriesPrev'] = $values['caloriesPrev'] + $ap->calories;
+    }
+
     return $this->respond($values);
   }
 
