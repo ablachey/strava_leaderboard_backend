@@ -7,10 +7,6 @@ Route::group(['middleware' => 'jwt.auth'], function() {
   Route::get('auth/me', 'Api\V1\AuthController@authenticatedUser');
   Route::post('auth/logout', 'Api\V1\AuthController@unauthenticate');
 
-  //REMOVED AFTER WEBHOOK IMPLEMENTATION
-  //Route::post('activities/sync', 'Api\V1\ActivityController@syncData');
-  //Route::post('activities/sync/board/{id}', 'Api\V1\ActivityController@syncBoardData');
-
   Route::get('boards', 'Api\V1\BoardController@index');
   Route::get('boards/{id}', 'Api\V1\BoardController@show');
   Route::post('boards/search', 'Api\V1\BoardController@search');

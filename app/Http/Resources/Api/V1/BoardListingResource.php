@@ -17,10 +17,10 @@ class BoardListingResource extends JsonResource
     $athletes = [];
     if($this->pivot->active) {
       if($this->pivot->admin) {
-        $athletes = UserBoardResource::collection($this->users()->get());
+        $athletes = UserBoardResource::collection($this->users()->orderBy('firstname', 'asc')->orderBy('lastname', 'asc')->get());
       }
       else {
-        $athletes = UserBoardResource::collection($this->users()->wherePivot('active', true)->get());
+        $athletes = UserBoardResource::collection($this->users()->wherePivot('active', true)->orderBy('firstname', 'asc')->orderBy('lastname', 'asc')->get());
       }
     }
     return [
