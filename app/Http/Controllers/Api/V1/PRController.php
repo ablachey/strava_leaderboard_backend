@@ -23,6 +23,8 @@ class PRController extends BaseController
       $effs = $activity->efforts()->select('name', DB::raw('MIN(elapsed_time) as e_time'))->where('pr_rank', 1)->groupBy('name')->get();
 
       foreach($effs as $eff) {
+        $eff['strava_id'] = $activity->strava_id;
+        $eff['start_date_local'] = $activity->start_date_local;
         $cont = $efforts->contains(function($v, $k) use ($eff) {
           return $v->name === $eff->name;
         });
