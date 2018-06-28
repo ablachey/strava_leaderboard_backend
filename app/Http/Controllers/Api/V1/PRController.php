@@ -17,7 +17,7 @@ class PRController extends BaseController
     }
     $efforts = collect();
 
-    $activities = $user->activities()->get();
+    $activities = $user->activities()->where('type', 'run')->get();
 
     foreach($activities as $activity) {
       $effs = $activity->efforts()->select('name', DB::raw('MIN(elapsed_time) as e_time'))->where('pr_rank', 1)->groupBy('name')->get();

@@ -11,6 +11,8 @@ use App\Activity;
 use App\Effort;
 use App\Board;
 use App\Jobs\GetStravaActivities;
+use Auth;
+use App\Http\Resources\Api\V1\ActivityResource;
 
 class ActivityController extends BaseController
 {
@@ -48,5 +50,13 @@ class ActivityController extends BaseController
     }
 
     return $this->respond(true);
+  }
+
+  public function index() {
+    $user = Auth::user();
+
+    $activities = $user->activities()->where('type', 'run')->latest('start_date_local')->limit(5)->get();
+
+    return $this->respond(ActivityResource::collection($activities));
   }
 }
