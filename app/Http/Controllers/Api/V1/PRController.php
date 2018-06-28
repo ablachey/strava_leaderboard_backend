@@ -46,6 +46,8 @@ class PRController extends BaseController
       }
     }
 
-    return $efforts->values();
+    $sortedEfforts = $efforts->sortBy('e_time');
+
+    return $this->respond($sortedEfforts->values()->all());
   }
 }
