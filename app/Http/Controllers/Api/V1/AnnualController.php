@@ -23,9 +23,9 @@ class AnnualController extends BaseController
     $runs = $activities->count();
     $distTime = $activities->select(DB::raw('SUM(distance) as total_distance, SUM(elapsed_time) as total_time'))->first();
 
-    $res['total_runs'] = $runs;
-    $res['total_distance'] = $distTime['total_distance'];
-    $res['total_time'] = $distTime['total_time'];
+    $res['runs'] = $runs;
+    $res['distance'] = $distTime['total_distance'];
+    $res['time'] = $distTime['total_time'];
 
     return $this->respond($res);
   }
