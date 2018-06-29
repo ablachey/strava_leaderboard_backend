@@ -27,4 +27,5 @@ Route::group(['middleware' => 'jwt.auth'], function() {
   Route::get('prs/{id}', 'Api\V1\PRController@show');
   Route::get('activities/recent', 'Api\V1\ActivityController@index');
   Route::get('annual/stats', 'Api\V1\AnnualController@getStats');
+  Route::get('annual/distances', 'Api\V1\AnnualController@getDistances');
 });
