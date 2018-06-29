@@ -20,6 +20,7 @@ class BubbleResource extends JsonResource
       'x' => $sdt->format('m'),
       'y' => $sdt->format('d'),
       'r' => round($this->distance / 500),
+      'd' => $this->distance,
     ];
   }
 }
