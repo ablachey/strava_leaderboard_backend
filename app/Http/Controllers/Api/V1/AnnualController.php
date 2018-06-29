@@ -31,11 +31,10 @@ class AnnualController extends BaseController
     return $this->respond($res);
   }
 
-  public function getMonthly() {
+  public function getDistances() {
     $user = Auth::user();
     $months = array();
     $distances = array();
-    $acts = array();
     $i = 1;
     $date = new Carbon('first day of january');
     $now = Carbon::now();
@@ -53,17 +52,9 @@ class AnnualController extends BaseController
                       ->where('start_date_local', '>=', $daySt)
                       ->where('start_date_local', '<', $dayEn)
                       ->select(DB::raw('SUM(distance) as total_distance'))->first();
-      
-      $actsPerMonth = $user->activities()
-                      ->where('type', 'run')
-                      ->where('start_date_local', '>=', $daySt)
-                      ->where('start_date_local', '<', $dayEn)
-                      ->select('start_date_local', 'distance')
-                      ->get();
 
       array_push($months, $shortMonth);
       array_push($distances, $dist['total_distance']);
-      array_push($acts, BubbleResource::collection($actsPerMonth));
 
       $date->addMonth();
       $i = $i + 1;
@@ -72,8 +63,22 @@ class AnnualController extends BaseController
 
     $res['months'] = $months;
     $res['distances'] = $distances;
-    $res['bubble'] = $acts;
 
     return $this->respond($res);
+  }
+
+  public function getBubble() {
+    $user = Auth::user();
+    $firstDay = new Carbon('first day of january');
+    $lastDay = new Carbon('last day of december');
+    
+    $activities = $user->activities()
+                    ->where('type', 'run')
+                    ->where('start_date_local', '>=', $firstDay)
+                    ->where('start_date_local', '<', $lastDay)
+                    ->select('start_date_local', 'distance')
+                    ->get();
+
+    return $this->respond(BubbleResource::collection($activities));
   }
 }
