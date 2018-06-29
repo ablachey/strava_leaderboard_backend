@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use App\User;
 use DB;
+use App\Http\Resources\Api\V1\PRResource;
 
 class PRController extends BaseController
 {
@@ -48,6 +49,6 @@ class PRController extends BaseController
 
     $sortedEfforts = $efforts->sortBy('e_time');
 
-    return $this->respond($sortedEfforts->values()->all());
+    return $this->respond(PRResource::collection($sortedEfforts));
   }
 }
