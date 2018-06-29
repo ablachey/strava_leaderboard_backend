@@ -31,7 +31,7 @@ class AnnualController extends BaseController
     return $this->respond($res);
   }
 
-  public function getDistances() {
+  public function getMonthly() {
     $user = Auth::user();
     $months = array();
     $distances = array();
