@@ -29,6 +29,8 @@ class ConnectionController extends BaseController
       }
     }
 
-    return $this->respond(UserResource::collection($connections));
+    $sortedConn = $connections->sortBy(['firstname', 'lastname']);
+
+    return $this->respond(UserResource::collection($sortedConn));
   }
 }
