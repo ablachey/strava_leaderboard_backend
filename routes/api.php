@@ -29,4 +29,5 @@ Route::group(['middleware' => 'jwt.auth'], function() {
   Route::get('annual/stats', 'Api\V1\AnnualController@getStats');
   Route::get('annual/distances', 'Api\V1\AnnualController@getDistances');
   Route::get('annual/bubble', 'Api\V1\AnnualController@getBubble');
+  Route::get('connections', 'Api\V1\ConnectionController@getConnections');
 });
