@@ -69,13 +69,16 @@ class StravaController extends BaseController
           }
           break;
         case 'update':
-          if($request->updates->title) {
-            $activity->name = $request->updates->title;
+          if($request->updates) {
+            if(!empty($request->updates['title'])) {
+              $activity->name = $request->updates['title'];
+            }
+            if(!empty($request->updates['type'])) {
+              $activity->type = $request->updates['type'];
+            }
+
+            $activity->save();
           }
-          if($request->updates->type) {
-            $activity->type = $request->updates->type;
-          }
-          $activity->save();
           break;
         case 'delete':
           if($activity && $user) {
