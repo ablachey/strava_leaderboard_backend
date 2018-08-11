@@ -28,7 +28,7 @@ class ActivityResource extends JsonResource
       'average_heartrate' => $this->average_heartrate,
       'max_heartrate' => $this->max_heartrate,
       'calories' => $this->calories,
-      'summary_polyline' => $this->location()->first()->summary_polyline,
+      'summary_polyline' => $this->location()->first()->summary_polyline ?? null,
       'athlete' => UserResource::make($this->user()->first()),
     ];
   }
