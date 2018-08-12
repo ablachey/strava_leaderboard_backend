@@ -62,7 +62,7 @@ class GetStravaActivity implements ShouldQueue
     $activity = new Activity($data);
     $this->user->activities()->save($activity);
 
-    if($data['start_latlng']) {
+    if(!empty($data['start_latlng'])) {
       $loc['start_lat'] = $data['start_latlng'][0];
       $loc['start_lng'] = $data['start_latlng'][1];
       $loc['end_lat'] = $data['end_latlng'][0];
@@ -85,14 +85,14 @@ class GetStravaActivity implements ShouldQueue
       }
     }
 
-    if($data['splits_metric']) {
+    if(!empty($data['splits_metric'])) {
       foreach($data['splits_metric'] as $split) {
         $sp = new Split($split);
         $activity->splits()->save($sp);
       }
     }
 
-    if($data['laps']) {
+    if(!empty($data['laps'])) {
       foreach($data['laps'] as $lap) {
         $lap['strava_id'] = $lap['id'];
         unset($lap['id']);
