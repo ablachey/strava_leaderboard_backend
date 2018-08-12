@@ -85,19 +85,23 @@ class GetStravaActivity implements ShouldQueue
       }
     }
 
-    foreach($data['splits_metric'] as $split) {
-      $sp = new Split($split);
-      $activity->splits()->save($sp);
+    if($data['splits_metric']) {
+      foreach($data['splits_metric'] as $split) {
+        $sp = new Split($split);
+        $activity->splits()->save($sp);
+      }
     }
 
-    foreach($data['laps'] as $lap) {
-      $lap['strava_id'] = $lap['id'];
-      unset($lap['id']);
-      $storedLap = Lap::where('strava_id', $lap['strava_id'])->first();
-      if(!$storedLap) {
-        $lap['start_date_local'] = new Carbon($lap['start_date_local']);
-        $lp = new Lap($lap);
-        $activity->laps()->save($lp);
+    if($data['laps']) {
+      foreach($data['laps'] as $lap) {
+        $lap['strava_id'] = $lap['id'];
+        unset($lap['id']);
+        $storedLap = Lap::where('strava_id', $lap['strava_id'])->first();
+        if(!$storedLap) {
+          $lap['start_date_local'] = new Carbon($lap['start_date_local']);
+          $lp = new Lap($lap);
+          $activity->laps()->save($lp);
+        }
       }
     }
   }
