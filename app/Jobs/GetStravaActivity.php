@@ -62,15 +62,17 @@ class GetStravaActivity implements ShouldQueue
     $activity = new Activity($data);
     $this->user->activities()->save($activity);
 
-    $loc['start_lat'] = $data['start_latlng'][0];
-    $loc['start_lng'] = $data['start_latlng'][1];
-    $loc['end_lat'] = $data['end_latlng'][0];
-    $loc['end_lng'] = $data['end_latlng'][1];
-    $loc['map_id'] = $data['map']['id'];
-    $loc['polyline'] = $data['map']['polyline'];
-    $loc['summary_polyline'] = $data['map']['summary_polyline'];
+    if($data['start_latlng']) {
+      $loc['start_lat'] = $data['start_latlng'][0];
+      $loc['start_lng'] = $data['start_latlng'][1];
+      $loc['end_lat'] = $data['end_latlng'][0];
+      $loc['end_lng'] = $data['end_latlng'][1];
+      $loc['map_id'] = $data['map']['id'];
+      $loc['polyline'] = $data['map']['polyline'];
+      $loc['summary_polyline'] = $data['map']['summary_polyline'];
 
-    $activity->location()->save(new Location($loc));
+      $activity->location()->save(new Location($loc));
+    }
     
     foreach($data['best_efforts'] as $bestEffort) {
       $bestEffort['strava_id'] = $bestEffort['id'];
