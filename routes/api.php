@@ -23,6 +23,7 @@ Route::group(['middleware' => 'jwt.auth'], function() {
   Route::get('profile/{id}/accumulated', 'Api\V1\ProfileController@accu');
   Route::get('profile/{id}/month', 'Api\V1\ProfileController@month');
   Route::get('profile/{id}/efforts', 'Api\V1\ProfileController@efforts');
+  Route::get('profile/{id}/dist-pace', 'Api\V1\ProfileController@distPaceAvg');
 
   Route::get('prs/{id}', 'Api\V1\PRController@show');
   Route::get('activities/recent', 'Api\V1\ActivityController@index');

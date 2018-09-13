@@ -188,7 +188,6 @@ class ProfileController extends BaseController
       if($effort) {
         $d = new Carbon($effort->start_date_local);
         array_push($days, $d->format('d M'));
-        //$pace = ($effort->elapsed_time / ($effort->distance / 1000)) / 60;
         array_push($values, $effort->elapsed_time);
       }
     }
@@ -196,6 +195,43 @@ class ProfileController extends BaseController
     $ret = [
       'values' => $values,
       'days' => $days
+    ];
+
+    return $this->respond($ret);
+  }
+
+  public function distPaceAvg(Request $request) {
+    $user = User::find($request->id);
+
+    if(!$user) {
+      return $this->respondWithNotFound();
+    }
+
+    $monthStart = new Carbon('first day of this month');
+    $monthFirstDay = new Carbon($monthStart->format('Y-m-d'));
+
+    $days = array();
+    $distances = array();
+    $paces = array();
+
+    $activities = $user->activities()
+                    ->where('type', 'run')
+                    ->where('start_date_local', '>=', $monthFirstDay)
+                    ->orderBy('start_date_local', 'asc')
+                    ->get();
+
+    foreach($activities as $activity) {
+      $d = new Carbon($activity->start_date_local);
+      array_push($days, $d->format('d M'));
+      $pace = ($activity->elapsed_time / ($activity->distance / 1000));
+      array_push($distances, $activity->distance);
+      array_push($paces, $pace);
+    }
+
+    $ret = [
+      'days' => $days,
+      'distances' => $distances,
+      'paces' => $paces,
     ];
 
     return $this->respond($ret);
