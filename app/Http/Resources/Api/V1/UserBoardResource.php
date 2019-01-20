@@ -19,7 +19,6 @@ class UserBoardResource extends JsonResource
       'strava_id' => $this->strava_id,
       'firstname' => $this->firstname,
       'lastname' => $this->lastname,
-      'email' => $this->email,
       'badge_type' => $this->badge_type,
       'image' => [
         'medium' => $this->profile_pic_medium,

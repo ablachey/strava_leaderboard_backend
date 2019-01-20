@@ -35,13 +35,12 @@ class AuthController extends BaseController
       'firstname' => $data->athlete->firstname,
       'lastname' => $data->athlete->lastname,
       'strava_id' => $data->athlete->id,
-      'email' => $data->athlete->email,
       'badge_type' => $data->athlete->badge_type_id,
       'profile_pic' => $data->athlete->profile,
       'profile_pic_medium' => $data->athlete->profile_medium,
     ];
 
-    $user = User::where('email', $userData['email'])->first();
+    $user = User::where('strava_id', $userData['strava_id'])->first();
     
     if(!$user) {
       $user = User::create($userData);
