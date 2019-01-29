@@ -27,6 +27,10 @@ class Effort extends Model
     'two-mile' => '2 mile',
     'five-kilometer' => '5k',
     'ten-kilometer' => '10k',
+    'fifteen-kilometer' => '15k',
+    'ten-mile' => '10 mile',
+    'twenty-kilometer' => '20k',
+    'half-marathon' => 'Half-Marathon',
   ];
 
   public function activity() {

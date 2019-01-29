@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1;
 
 use App\Http\Requests\Api\BaseRequest;
+use App\Effort;
 
 class ProfileEffortRequest extends BaseRequest
 {
@@ -14,7 +15,7 @@ class ProfileEffortRequest extends BaseRequest
   public function rules()
   {
     return [
-      'type' => 'required|in:four-hundred,half-mile,kilometer,mile,two-mile',
+      'type' => 'required|in:' . implode(',', array_keys(Effort::TYPES)),
     ];
   }
 }

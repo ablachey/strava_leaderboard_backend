@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1;
 
 use App\Http\Requests\Api\BaseRequest;
+use App\Effort;
 
 class CardRequest extends BaseRequest
 {
@@ -14,7 +15,7 @@ class CardRequest extends BaseRequest
   public function rules()
   {
     return [
-      'type' => 'required|in:four-hundred,half-mile,kilometer,mile,two-mile,five-kilometer,ten-kilometer',
+      'type' => 'required|in:' . implode(',', array_keys(Effort::TYPES)),
       'days' => 'required|numeric|min:1|max:30',
     ];
   }
